@@ -1,16 +1,6 @@
-# Lite-BD: A Two-Stage Backdoor Defense Framework
+# Lite-BD: A Lightweight Black-box Backdoor Defense via Reviving Multi-Stage Image Transformations
 
-Lite-BD is a lightweight backdoor defense framework for image classification models. It uses a two-stage pipeline to neutralize backdoor triggers at inference time without requiring retraining or access to the original training data.
-
-## Overview
-
-Backdoor attacks embed hidden triggers into deep neural networks during training, causing the model to misclassify any input containing the trigger to an attacker-chosen target class. Lite-BD defends against these attacks by:
-
-1. **Stage 1 — Random Resize & Pad with Super-Resolution Recovery**: The input image is randomly downscaled and padded with zeros, which disrupts spatially-localized triggers. A super-resolution model then restores the image to its original size and quality.
-
-2. **Stage 2 — Frequency Band Detection**: If Stage 1 does not change the model's prediction, Lite-BD systematically scans frequency bands using 2D FFT to locate the band carrying the trigger signal. The identified band is removed via a bandstop filter, and the image is restored using one of several recovery methods.
-
-If neither stage changes the prediction, the original image is returned unmodified.
+Deep Neural Networks (DNNs) are vulnerable to backdoor attacks. Due to the nature of Machine Learning as a Service (MLaaS) applications, black-box defenses are more practical than white-box methods, yet existing purification techniques suffer from key limitations: a lack of justification for specific transformations, dataset dependency, high computational overhead, and a neglect of frequency-domain transformations. This paper conducts a preliminary study on various image transformations, identifying down-upscaling as the most effective backdoor trigger disruption technique. We subsequently propose \texttt{Lite-BD}, a lightweight two-stage blackbox backdoor defense. \texttt{Lite-BD} first employs a super-resolution-based down-upscaling stage to neutralize spatial triggers. A secondary stage utilizes query-based band-by-band frequency filtering to remove triggers hidden in specific bands. Extensive experiments against state-of-the-art attacks demonstrate that \texttt{Lite-BD} provides robust and efficient protection. 
 
 ## Supported Attacks
 
@@ -26,9 +16,6 @@ If neither stage changes the prediction, the original image is returned unmodifi
 | LF | Low-frequency perturbation |
 | Poison Ink | Edge injection |
 | LIRA | Learned trigger |
-| FIBA | Frequency-based |
-| Refool | Reflection-based |
-| Filter | Instagram-style filter |
 
 ## Supported Datasets & Models
 
@@ -50,9 +37,9 @@ If neither stage changes the prediction, the original image is returned unmodifi
 ├── resnet.py                   # ResNet-18 architecture
 ├── vgg.py                      # VGG architecture
 ├── cifar10.py                  # CIFAR-10 dataset helper
-├── SR_models/                  # Pretrained super-resolution model weights
-├── checkpoint/                 # Backdoored model checkpoints
-├── pattern25.png               # Default trigger pattern image
+├── SR_models/                  # Pretrained super-resolution model weights (needs to be downloaded)
+├── checkpoint/                 # Backdoored model checkpoints (needs to be downloaded)
+├── pattern25.png               # Default trigger pattern for Badnet
 ├── sig.pt                      # SIG attack pattern
 └── tiny_preactresnet18_0_255.npy  # LF attack trigger pattern
 ```
@@ -84,67 +71,29 @@ pip install basicsr realesrgan
 
 ## Pretrained Weights
 
-Place pretrained SR model weights in the `SR_models/` directory:
-
-- **SwinIR** (used in `Lite-BD(SW).py`): `SR_models/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x2.pth`
-- **Real-ESRGAN** (used in `Lite-BD(RE).py`): `SR_models/RealESRGAN_x4plus.pth`
-
-Backdoored model checkpoints must be placed in `checkpoint/` following the naming convention:
-
-```
-checkpoint/{dataset}_{attack}_t_{target_label}_p_{poison_ratio}.pth
-```
-
-Example: `checkpoint/cifar10_badnet_t_3_p_10.0.pth`
+To download the SR model weights and backdoored model checkpoints please download the zip filed from: https://drive.google.com/file/d/1XnwUSRV-9tJlUaKhEGKU4Ks9RkuN3s3C/view?usp=sharing
+Unzip the zip file and it will contain two folders 'SR_models' and 'checkpoint'. 
 
 ## Usage
 
 ### SwinIR variant
 
 ```bash
-python "Lite-BD(SW).py" \
-    --dataset cifar10 \
-    --atk badnet \
-    --t_b 3 \
-    --n_eval 100 \
-    --min_scale 0.5 \
-    --num_bands 50 \
-    --recovery_method unsharp \
-    --recovery_strength 0.5 \
-    --swinir_path SR_models/002_lightweightSR_DIV2K_s64w8_SwinIR-S_x2.pth \
-    --swinir_scale 2
+python "Lite-BD(SW).py" 
 ```
 
 ### Real-ESRGAN variant
 
 ```bash
-python "Lite-BD(RE).py" \
-    --dataset cifar10 \
-    --atk badnet \
-    --t_b 3 \
-    --n_eval 100 \
-    --min_scale 0.5 \
-    --num_bands 50 \
-    --recovery_method unsharp \
-    --recovery_strength 0.5
+python "Lite-BD(RE).py" 
 ```
 
-### Key Arguments
+Both of the codes will evaluate Lite-BD on all ten attacks for all three datasets. If you want to see the results for a specific attack or dataset please modify following lines from Lite-BD(SW) and Lite-BD(RE):
 
-| Argument | Default | Description |
-|----------|---------|-------------|
-| `--dataset` | `cifar10` | Dataset: `cifar10`, `gtsrb`, `fashion-mnist` |
-| `--atk` | `badnet` | Attack type (see supported attacks above) |
-| `--t_b` | `3` | Target backdoor label |
-| `--p` | `1.0` | Poison ratio used during training |
-| `--n_eval` | `100` | Number of images to evaluate |
-| `--min_scale` | `0.5` | Stage 1 minimum resize scale (0–1) |
-| `--num_bands` | `50` | Stage 2 number of frequency bands to test |
-| `--recovery_method` | `unsharp` | Stage 2 recovery: `super_resolution`, `bilateral`, `unsharp`, `none` |
-| `--recovery_strength` | `0.5` | Stage 2 recovery strength (0–1) |
-| `--use_smooth_filter` | `True` | Use smooth frequency transitions in Stage 2 |
-| `--transition_width` | `0.08` | Smooth transition band width (0.01–0.1) |
-| `--verbose_per_image` | `False` | Print per-image debug info |
+attacks = ['badnet', 'blend', 'wanet', 'sig', 'cl', 'bppattack', 'trojan', 'lf',  'poison-ink', 'lira']
+datasets = ['cifar10', 'gtsrb', 'fashion-mnist']
+
+
 
 ## Output Metrics
 
@@ -157,40 +106,17 @@ python "Lite-BD(RE).py" \
 | **Defense ASR** | Fraction of poisoned inputs still classified as target label after defense |
 | **ASR Reduction** | `Baseline ASR − Defense ASR` |
 
-Results are saved to `litebd_re_results.csv` (Real-ESRGAN variant) or `two_stage_defense_swinir_results.csv` (SwinIR variant).
+Results are saved to `litebd_re_results.csv` (Real-ESRGAN variant) or `litebd_sw_results.csv` (SwinIR variant).
 
-## How It Works
+## Citation
 
-```
-Input Image (poisoned)
-       │
-       ▼
-┌─────────────────────────────────┐
-│  Stage 1: Resize & Pad + SR     │
-│  - Downsample by min_scale      │
-│  - Pad to original size         │
-│  - Upsample with SwinIR/ESRGAN  │
-└─────────────────────────────────┘
-       │
-  Label changed?
-   YES ──► Return Stage 1 output
-       │
-      NO
-       │
-       ▼
-┌─────────────────────────────────┐
-│  Stage 2: Frequency Band Filter │
-│  - FFT → test each band         │
-│  - Find band that flips label   │
-│  - Apply bandstop filter        │
-│  - Apply recovery method        │
-└─────────────────────────────────┘
-       │
-  Label changed?
-   YES ──► Return Stage 2 output
-       │
-      NO
-       │
-       ▼
-  Return original image
+If you find our work insight or useful, please consider citing:
+
+```bash
+@article{miah2026lite,
+  title={Lite-BD: A Lightweight Black-box Backdoor Defense via Reviving Multi-Stage Image Transformations},
+  author={Miah, Abdullah Arafat and Bi, Yu},
+  journal={arXiv preprint arXiv:2602.07197},
+  year={2026}
+}
 ```
