@@ -72,6 +72,7 @@ pip install basicsr realesrgan
 ## Pretrained Weights
 
 To download the SR model weights and backdoored model checkpoints please download the zip filed from: https://drive.google.com/file/d/1XnwUSRV-9tJlUaKhEGKU4Ks9RkuN3s3C/view?usp=sharing
+
 Unzip the zip file and it will contain two folders 'SR_models' and 'checkpoint'. 
 
 ## Usage
