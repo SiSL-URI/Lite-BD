@@ -25,7 +25,7 @@ import torchvision.transforms.functional as G
 import pandas as pd
 from sklearn.metrics import accuracy_score
 import cv2
-from SwinIR.models.network_swinir import SwinIR
+from network_swinir import SwinIR
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -1196,7 +1196,7 @@ class PoisonedDataset(Dataset):
 
 # Main evaluation loop
 attacks = ['badnet', 'blend', 'wanet', 'sig', 'cl', 'bppattack', 'trojan', 'lf',  'poison-ink', 'lira']
-datasets = ['cifar10', 'gtsrb', 'fashion-mnist']
+datasets = ['fashion-mnist']
 
 # Store results
 results = []
