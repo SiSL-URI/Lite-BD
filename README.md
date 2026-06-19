@@ -102,6 +102,7 @@ python "Lite-BD(RE).py"
 Both of the codes will evaluate Lite-BD on all ten attacks for all three datasets. If you want to see the results for a specific attack or dataset please modify following lines from Lite-BD(SW) and Lite-BD(RE):
 
 attacks = ['badnet', 'blend', 'wanet', 'sig', 'cl', 'bppattack', 'trojan', 'lf',  'poison-ink', 'lira']
+
 datasets = ['cifar10', 'gtsrb', 'fashion-mnist']
 
 
@@ -121,7 +122,7 @@ Results are saved to `litebd_re_results.csv` (Real-ESRGAN variant) or `litebd_sw
 
 ## Citation
 
-If you find our work insight or useful, please consider citing:
+If you find our work useful, please consider citing:
 
 ```bash
 @article{miah2026lite,
