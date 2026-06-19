@@ -131,3 +131,7 @@ If you find our work insight or useful, please consider citing:
   year={2026}
 }
 ```
+
+## Contact
+
+For any question regarding the repo or paper please contact: abdullaharafat.miah@uri.edu or yu_bi@uri.edu
