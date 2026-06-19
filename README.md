@@ -25,6 +25,16 @@ Deep Neural Networks (DNNs) are vulnerable to backdoor attacks. Due to the natur
 | GTSRB | VGG-11 |
 | Fashion-MNIST | ResNet-18 |
 
+To downalod the CIFAR-10 dataset and arrange it as needed please run the following:
+
+```bash
+python "cifar10.py" 
+```
+
+For GTSRB and Fashion-Mnist please download the dataset from following link and unzipt it:
+
+GTSRB and Fashion-Mnist: https://drive.google.com/file/d/1i22oFGZ3mRmPG69VG8_JN48LGSqKzOH7/view?usp=sharing
+
 ## File Structure
 
 ```
