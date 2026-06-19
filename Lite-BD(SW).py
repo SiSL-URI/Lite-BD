@@ -1473,5 +1473,5 @@ print(results_df.to_string(index=False))
 print("\n" + "="*100)
 
 # Save results to CSV
-results_df.to_csv(f'two_stage_defense_swinir_results.csv', index=False)
-print(f"\nResults saved to: two_stage_defense_swinir_results.csv")
+results_df.to_csv(f'litebd_sw_results.csv.csv', index=False)
+print(f"\nResults saved to: litebd_sw_results.csv")
