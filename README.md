@@ -125,12 +125,16 @@ Results are saved to `litebd_re_results.csv` (Real-ESRGAN variant) or `litebd_sw
 If you find our work useful, please consider citing:
 
 ```bash
-@article{miah2026lite,
-  title={Lite-BD: A Lightweight Black-box Backdoor Defense via Reviving Multi-Stage Image Transformations},
+@INPROCEEDINGS{11729323,
   author={Miah, Abdullah Arafat and Bi, Yu},
-  journal={arXiv preprint arXiv:2602.07197},
-  year={2026}
-}
+  booktitle={2026 International Joint Conference on Neural Networks (IJCNN)}, 
+  title={Lite-BD: A Lightweight Black-box Backdoor Defense via Reviving Multi-Stage Image Transformations}, 
+  year={2026},
+  volume={},
+  number={},
+  pages={1-8},
+  keywords={Modeling;Printing;Automatic speech recognition;Toxicology;Conferences;Frequency;Superresolution;Labeling;Calcium;Filtering;Backdoor attacks;Trustworthy AI;Deep Neural Networks},
+  doi={10.1109/IJCNN69854.2026.11729323}}
 ```
 
 ## Contact
